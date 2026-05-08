@@ -63,8 +63,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "dbfa44d7-75d1-4900-88d2-e6cc285479d6"
+        "projectId": "cfe125e0-ae16-4ff4-92aa-9af8fd959610"
       }
-    }
+    },
+    "owner": "theprasadanilkamble"
   }
 }
