@@ -7,7 +7,10 @@ import { formatAmount } from '../lib/currency';
 import { getCategoryMeta } from '../constants/categories';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-    UIManager.setLayoutAnimationEnabledExperimental(true);
+    const isFabric = (global as any).nativeFabricUIManager != null;
+    if (!isFabric) {
+        UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
 }
 
 function CompactExpenseRow({ expense, theme }: { expense: any; theme: Theme }) {
@@ -189,9 +192,9 @@ export default function DailyBarChart({ historicalWeeksData }: Props) {
                                                 onPress={() => handleBarPress(d.date, isBlank)}
                                             >
                                                 <View style={styles.barTrack}>
-                                                    {isActive && !isBlank && rupees > 0 && (
+                                                    {isActive && !isBlank && (
                                                         <Text style={styles.floatingTotal} numberOfLines={1} adjustsFontSizeToFit>
-                                                            {formatAmount(d.total)}
+                                                            {d.total > 0 ? formatAmount(d.total) : '₹0'}
                                                         </Text>
                                                     )}
                                                     {!isBlank && (

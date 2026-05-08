@@ -27,6 +27,9 @@ export default function TabsLayout() {
           fontSize: 11,
           fontWeight: '600',
         },
+        sceneContainerStyle: {
+          backgroundColor: theme.background,
+        },
       }}
     >
       <Tabs.Screen
@@ -65,15 +68,7 @@ export default function TabsLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="voice"
-        options={{
-          title: 'Voice',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'mic' : 'mic-outline'} size={23} color={color} />
-          ),
-        }}
-      />
+      <Tabs.Screen name="voice" options={{ href: null }} />
       <Tabs.Screen
         name="assistant"
         options={{

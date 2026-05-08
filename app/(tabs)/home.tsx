@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, RefreshControl, TouchableOpacity } from 'react-native';
+import { getLocalISODate } from '../../lib/date';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useAuthStore } from '../../store/authStore';
@@ -32,12 +33,12 @@ export default function HomeScreen() {
   const { data: recurring = [] } = useRecurring();
 
   const dueTodayCount = recurring.filter(r => {
-    return r.is_active && r.next_due_date === new Date().toISOString().split('T')[0];
+    return r.is_active && r.next_due_date === getLocalISODate();
   }).length;
 
   const {
     isLoading, todayTotal, weekTotal, monthTotal, periodTotal,
-    byCategory, historicalWeeksData, recentExpenses,
+    byCategory, monthByCategory, historicalWeeksData, recentExpenses,
     topCategory, averageDailySpend, largestExpense,
     memberBreakdown
   } = useDashboardStats(period);
@@ -118,7 +119,7 @@ export default function HomeScreen() {
 
         <SpendingPieChart data={byCategory} />
         <DailyBarChart historicalWeeksData={historicalWeeksData} />
-        <BudgetCard budget={budget ?? null} spentPaise={monthTotal} />
+        <BudgetCard budget={budget ?? null} spentPaise={monthTotal} monthByCategory={monthByCategory} />
         {dueTodayCount > 0 && (
           <TouchableOpacity
             style={styles.recurringNudge}

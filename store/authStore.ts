@@ -8,7 +8,7 @@ interface AuthState {
     isLoading: boolean;
     setSession: (session: Session | null) => void;
     signOut: () => Promise<void>;
-    initialize: () => void;
+    initialize: () => (() => void);
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -25,19 +25,26 @@ export const useAuthStore = create<AuthState>((set) => ({
     },
 
     initialize: () => {
+        console.log("[Auth] initialize() called");
         // Get initial session
-        supabase.auth.getSession().then(({ data: { session } }) => {
+        supabase.auth.getSession()
+            .then(({ data: { session } }) => {
+                console.log("[Auth] getSession() successful. Session:", !!session);
+                set({ session, user: session?.user ?? null, isLoading: false });
+            })
+            .catch((error) => {
+                console.error("[Auth] Auth session error:", error);
+                set({ isLoading: false });
+            });
+
+        // Listen for auth changes (login, logout, token refresh)
+        console.log("[Auth] setting up onAuthStateChange");
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+            console.log("[Auth] onAuthStateChange event:", _event);
             set({ session, user: session?.user ?? null, isLoading: false });
         });
 
-        // Listen for auth changes (login, logout, token refresh)
-        supabase.auth.onAuthStateChange(async (_event, session) => {
-            set({ session, user: session?.user ?? null, isLoading: false });
-            
-            if (_event === 'SIGNED_IN' && session?.user) {
-                // Register push token in background — don't await
-                // registerForPushNotifications(session.user.id).catch(console.error);
-            }
-        });
+        // Return unsubscribe so the caller can clean up
+        return () => subscription.unsubscribe();
     },
 }));

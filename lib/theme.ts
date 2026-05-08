@@ -1,5 +1,5 @@
 // lib/theme.ts
-import { useColorScheme } from 'react-native';
+import { useSettingsStore } from '../store/settingsStore';
 
 export const lightTheme = {
     background: '#f8f8ff',
@@ -7,7 +7,8 @@ export const lightTheme = {
     text: '#1a1a1a',
     textSecondary: '#888888',
     border: '#f0f0f0',
-    primary: '#6C63FF',
+    // primary: '#6C63FF',
+    primary: '#03C775',
     inputBg: '#fafafa',
     cardBg: '#ffffff',
     skeletonBg: '#e0e0e0',
@@ -22,7 +23,8 @@ export const darkTheme = {
     text: '#f0f0f0',
     textSecondary: '#aaaaaa',
     border: '#2a2a35',
-    primary: '#8B83FF',
+    // primary: '#8B83FF',
+    primary: '#03C775',
     inputBg: '#1c1c24',
     cardBg: '#1c1c24',
     skeletonBg: '#2a2a35',
@@ -34,7 +36,6 @@ export const darkTheme = {
 export type Theme = typeof lightTheme;
 
 export const useTheme = (): Theme => {
-    // const scheme = useColorScheme();
-    const scheme = 'dark';
+    const scheme = useSettingsStore(state => state.theme);
     return scheme === 'dark' ? darkTheme : lightTheme;
 };
